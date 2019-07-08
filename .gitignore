@@ -1,10 +1,18 @@
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
-
+.vscode/
+node_modules/
+public/
+src/
 # Folder config file
 Desktop.ini
-
+babel.config.js
+package-lock.json
+package.json
+README.md
+vue.config.js
+yarn.lock
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
