@@ -1,1 +1,91 @@
-<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"><meta http-equiv=Cache-Control content="no-cache, no-store, must-revalidate"><meta http-equiv=Pragma content=no-cache><meta http-equiv=Expires content=0><title>评论</title><link href=static/css/chunk-vendors.764ed5c9.css rel=preload as=style><link href=static/css/meiriyiyan.d31b6b7e.css rel=preload as=style><link href=static/js/chunk-vendors.ff6c5f4b.js rel=preload as=script><link href=static/js/meiriyiyan.2c2e86d5.js rel=preload as=script><link href=static/css/chunk-vendors.764ed5c9.css rel=stylesheet><link href=static/css/meiriyiyan.d31b6b7e.css rel=stylesheet></head><body><noscript><strong>We're sorry but world doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script src=static/js/chunk-vendors.ff6c5f4b.js></script><script src=static/js/meiriyiyan.2c2e86d5.js></script></body></html>
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"><meta http-equiv=Cache-Control content="no-cache, no-store, must-revalidate"><meta http-equiv=Pragma content=no-cache><meta http-equiv=Expires content=0><title>评论</title><script>/*
+created by wsz
+version v0.0.1
+*/
+    function bridge(o, e) {
+      var r = navigator.userAgent.toLowerCase(),
+        s = navigator.platform.toLowerCase(),
+        d = !(!s.match("mac") && !s.match("win")),
+        u = -1 != r.indexOf("wxdebugger"),
+        l = -1 != r.indexOf("micromessenger"),
+        p = -1 != r.indexOf("android"),
+        f = -1 != r.indexOf("iphone") || -1 != r.indexOf("ipad");
+
+      function setupWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+          return callback(WebViewJavascriptBridge);
+        }
+        if (window.WVJBCallbacks) {
+          return window.WVJBCallbacks.push(callback);
+        }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'https://__bridge_loaded__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function () {
+          document.documentElement.removeChild(WVJBIframe)
+        }, 0)
+      }
+      // 调用原生应用的方法
+      function IOSAndAndroidBridgeInvoke(methodName, params, callbackHandler) {
+        if (p) {
+          // 安卓客户端的桥梁变量
+          if (window.androidBridge) {
+            if (callbackHandler) {
+              var callbackHandlerName = methodName + 'Callback'
+              window[callbackHandlerName] = callbackHandler
+              androidBridge.invoke(methodName, params, callbackHandlerName)
+            } else {
+              androidBridge.invoke(methodName, params, '')
+            }
+          } else {
+            callbackHandler('fail')
+          }
+        } else if (f) {
+          // ios 系统
+          var a = 1;
+          setupWebViewJavascriptBridge(function (bridge) {
+            a++
+            bridge.callHandler(methodName, params, callbackHandler)
+          })
+          if (a == 1) {
+            callbackHandler('fail')
+          }
+        }
+      }
+      // 原生方法调用h5页面的方法
+
+      // w 里面写具体交互方法的名字 
+      var w = {
+        IOSAndAndroidBridgeOn: function (methodName, method) {
+          if (p) {
+            // 安卓客户端的桥梁变量
+            window[methodName] = method
+          } else if (f) {
+            setupWebViewJavascriptBridge(function (bridge) {
+              bridge.registerHandler(methodName, function (data, responseCallback) {
+                // data ios -> h5 的数据
+                var responseData = method(data)
+                // 这里是 h5 -> ios 的数据
+                responseCallback(responseData)
+              })
+            })
+          }
+        },
+        //  appLogin
+        appLogin: function (json) {
+          IOSAndAndroidBridgeInvoke("appLogin", JSON.stringify(json.data) || '{}', function (
+            response) {
+            json.success(response)
+          })
+        },
+      }
+      if (!o.mcj) {
+        return e && (o.mcj = w), w
+      }
+
+    }
+
+
+    bridge(window, !0)</script><link href=static/css/chunk-vendors.84cebdee.css rel=preload as=style><link href=static/css/meiriyiyan.d31b6b7e.css rel=preload as=style><link href=static/js/chunk-vendors.ff6c5f4b.js rel=preload as=script><link href=static/js/meiriyiyan.8a396985.js rel=preload as=script><link href=static/css/chunk-vendors.84cebdee.css rel=stylesheet><link href=static/css/meiriyiyan.d31b6b7e.css rel=stylesheet></head><script src="http://wechatfe.github.io/vconsole/lib/vconsole.min.js?v=3.2.0"></script><script>new VConsole();</script><body><noscript><strong>We're sorry but world doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script src=static/js/chunk-vendors.ff6c5f4b.js></script><script src=static/js/meiriyiyan.8a396985.js></script></body></html>
